@@ -142,6 +142,8 @@ nav {
     font-size: 30px;
 	color: #cc9a9a;
     transition: color 0.2s ease-out;
+    margin-bottom: 0.7rem;
+    margin-right: 1.5rem;
 }
 .list-item:hover .delete {
     display: block;
