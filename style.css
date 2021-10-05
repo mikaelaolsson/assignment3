@@ -156,7 +156,6 @@ nav {
     grid-template: 
     "A B C" / 2fr 4fr 2fr;
     color: #777;
-    /* padding: 0.75rem; */
     padding: 0.625rem 0.3rem 0.625rem 0.9rem;
     grid-gap: 1rem;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
@@ -164,11 +163,9 @@ nav {
 	            0 9px 1px -3px rgba(0, 0, 0, 0.2),
 	            0 16px 0 -6px #f6f6f6,
 	            0 17px 2px -6px rgba(0, 0, 0, 0.2);
-
 }
 .count {
     grid-area: A;
-    /* padding-left: 0.3rem; */
 }
 .count strong {
     font-weight: 300;
