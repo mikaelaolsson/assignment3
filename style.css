@@ -83,22 +83,36 @@ nav {
     "Check Todo" / 2rem auto;
     font-size: 24px;
 	border-bottom: 1px solid #ededed;
-    padding: 1rem 1rem 1rem 0.2rem;
+    padding: 0.8rem 0.85rem 0.8rem 0.1rem;
 }
 /* Ev. låta last-child av list-item inte ha border-bottom???????? */
 .toggle {
     grid-area: Check;
-    justify-self: center;
-    align-self: center;
-    opacity: 30%;
+    display: none;
 }
-input.toggle {
-    transform: scale(2);
+.container {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    border: solid 0.02rem #e6e6e6;
+    margin-left: 0.4rem;
+    align-self: center;
+}
+.container input:checked ~ .checkmark {
+    position: absolute;
+    width: 5px;
+    height: 16px;
+    border: solid #af5b5e;
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg);
+    margin-left: 0.7rem;
+    margin-top: 0.3rem;
 }
 .entry {
     grid-area: Todo;
+    align-self: center;
     word-break: break-all;
-    padding-left: 1.5rem;
+    padding-left: 1.7rem;
     line-height: 1.2;
     /* Denna gör ingenting just nu men kan användas när vi byter färg på labeln */
 	transition: color 0.4s;
@@ -125,7 +139,6 @@ input.toggle {
     "A B C" / 2fr 4fr 2fr;
     color: #777;
     padding: 0.75rem;
-    /* padding: 1rem 0.5rem 1rem 1rem; */
     grid-gap: 4rem 1rem;
 }
 .count {
