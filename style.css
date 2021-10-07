@@ -196,6 +196,7 @@ nav {
 }
 .clear-completed {
     grid-area: C;
+    display: none;
 }
 .clear-completed:hover {
     text-decoration: underline;
