@@ -124,12 +124,14 @@ nav {
 }
 /* i JS: kom ihåg att gömma checkbox .toggle när edit syns */
 .edit {
+    display: none;
     grid-area: Todo;
     align-self: center;
     padding: 0.9rem 0.85rem 0.95rem 1rem;
-    margin-left: 0.75rem;
+    margin-left: 2.75rem;
+    width: 29.65rem;
     line-height: 1.2;
-    font-size: inherit;
+    font-size: 24px;
     color: inherit;
     border: 1px solid #999;
 	box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
@@ -229,6 +231,9 @@ nav {
         font-size: 20px;
         padding-right: 10rem;
     }
+    .edit {
+        max-width: 25rem;
+    }
     .footer {
         display: grid;
         grid-template: 
@@ -246,6 +251,9 @@ nav {
     .new-todo {
         padding-right: 5rem;
     }
+    .edit {
+        max-width: 20rem;
+    }
 }
 @media screen and (max-width: 400px) {
     .todo {
@@ -253,6 +261,9 @@ nav {
     }
     .new-todo {
         padding-right: 0;
+    }
+    .edit {
+        max-width: 15rem;
     }
     h1 {
         font-size: 80px;
