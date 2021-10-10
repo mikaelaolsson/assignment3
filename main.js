@@ -17,6 +17,9 @@ let filterCompleted = document.querySelector("#completed");
 let list = [];
 let completedList = [];
 
+// detta är en counter som ska bort lol
+//let butt = 0;
+
 textbox.addEventListener("keydown", function(e) {
     if (e.code === "Enter" && textbox.value !== "" && !(/^\s+$/.test(textbox.value))) {
         let listItem = template.content.firstElementChild.cloneNode(true);
@@ -54,12 +57,20 @@ textbox.addEventListener("keydown", function(e) {
             if (checkbox.checked) {
                 listItem.classList.add("completed");
                 completedList.push(listItem);
+
+                if (location.hash === "#/active") { // funkar denna för att listItem är ett DOM objekt???
+                    listItem.remove();
+                }
             }
             else {
                 if (listItem.classList.contains("completed")) {
                     listItem.classList.remove("completed");
                     let index = completedList.indexOf(listItem);
                     completedList.splice(index, 1);
+
+                    if (location.hash === "#/completed") { // samma som ovan
+                        listItem.remove();
+                    }
                 }   
             }
 
@@ -68,6 +79,13 @@ textbox.addEventListener("keydown", function(e) {
             }
             else {
                 clearCompleted.style.display = "none";
+            }
+
+            if (list.length === completedList.length) {
+                toggleAll.checked = true;
+            }
+            else {
+                toggleAll.checked = false;
             }
             
             count.textContent = (list.length - completedList.length);
@@ -92,17 +110,25 @@ textbox.addEventListener("keydown", function(e) {
                     item.style.display = "grid";
                     entry.textContent = edit.value; 
                 }
-                /// Denna del funkar ej :((((
+                /// Denna del funkar ej :((((              
                 // else if (ev.code === "Enter" && (edit.value === "" || /^\s+$/.test(edit.value))) {
-                //     let index = list.indexOf(listItem);
-                //     list.splice(index, 1);
+                //     ev.preventDefault();
+                //     if (list.includes(listItem)) {
+                //         let index = list.indexOf(listItem);
+                //         list.splice(index, 1);
+                //     }
 
                 //     if (listItem.classList.contains("completed")) {
                 //         let index = completedList.indexOf(listItem);
                 //         completedList.splice(index, 1);
                 //     }
-                    
-                //     listItem.remove();
+
+                //     if (todolist.contains(listItem)) {
+                //         butt++;
+                //         console.log(butt);
+                //         listItem.remove();
+
+                //     }
                 // }
                 count.textContent = (list.length - completedList.length);
 
@@ -130,8 +156,10 @@ textbox.addEventListener("keydown", function(e) {
             }
         });
  
+        if (location.hash !== "#/completed") { // funkar pga DOM objekt???
+            todolist.append(listItem);
+        }
 
-        todolist.append(listItem);
         list.push(listItem);
         textbox.value = "";
 
@@ -148,11 +176,13 @@ textbox.addEventListener("keydown", function(e) {
         }
         count.textContent = (list.length - completedList.length);
     }
-})
+});
 
 toggleAll.onchange = event => {
+    // om man inte står på #/ så kan nodelist bli noll
+
     let checkboxes = document.querySelectorAll(".toggle");
-    let listItems = document.querySelectorAll(".list-item");
+    let listItems = document.querySelectorAll(".task"); 
 
     if (toggleAll.checked) {
         checkboxes.forEach(box => {
@@ -183,6 +213,7 @@ toggleAll.onchange = event => {
 }
 
 clearCompleted.onclick = event => {
+    // om man står på #/active när man trycker på knappen så funkar det ej!
     let completed = document.querySelectorAll(".completed");
     completedList.length = 0;
 
@@ -201,42 +232,42 @@ clearCompleted.onclick = event => {
 
 }
 
-filterAll.onclick = event => {
-    removeAllChildren(todolist);
-    filterAll.classList.add("selected");
+// vet ej om detta är rätt alls????????????
+window.onhashchange = event => {
+    if (location.hash === "" || location.hash === "#/") {
+        filterAll.classList.add("selected");
 
-    list.forEach(item => {
-        todolist.append(item);
-    });
-
-    filterActive.classList.remove("selected");
-    filterCompleted.classList.remove("selected");
-}
-
-filterActive.onclick = event => {
-    removeAllChildren(todolist);
-    filterActive.classList.add("selected");
-
-    list.forEach(item => {
-        if (!item.classList.contains("completed")) {
+        list.forEach(item => {
             todolist.append(item);
-        }
-    });
+        });
+    
+        filterActive.classList.remove("selected");
+        filterCompleted.classList.remove("selected");
+    }
+    else if (location.hash === "#/active") {
+        filterActive.classList.add("selected");
+        removeAllChildren(todolist);
+        list.forEach(item => {
+            if (!item.classList.contains("completed")) {
+                todolist.append(item);
+            }
+        });
+    
+        filterAll.classList.remove("selected");
+        filterCompleted.classList.remove("selected");
+    }
+    else if (location.hash === "#/completed") {
+        filterCompleted.classList.add("selected");
+        removeAllChildren(todolist);
+        list.forEach(item => {
+            if (item.classList.contains("completed")) {
+                todolist.append(item);
+            }
+        })
 
-    filterAll.classList.remove("selected");
-    filterCompleted.classList.remove("selected");
-}
-
-filterCompleted.onclick = event => {
-    removeAllChildren(todolist);
-    filterCompleted.classList.add("selected");
-
-    completedList.forEach(item => {
-        todolist.append(item);
-    })
-
-    filterAll.classList.remove("selected");
-    filterActive.classList.remove("selected");
+        filterAll.classList.remove("selected");
+        filterActive.classList.remove("selected");
+    }
 }
 
 function removeAllChildren(parent) {
