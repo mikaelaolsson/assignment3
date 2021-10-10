@@ -18,10 +18,10 @@ let list = [];
 let completedList = [];
 
 textbox.addEventListener("keydown", function(e) {
-    if (e.code === "Enter" && textbox.value !== "") {
+    if (e.code === "Enter" && textbox.value !== "" && !(/^\s+$/.test(textbox.value))) {
         let listItem = template.content.firstElementChild.cloneNode(true);
 
-        let text = textbox.value;
+        let text = (textbox.value).trim();
         listItem.querySelector(".entry").textContent = text;
 
         let deleteButton = listItem.querySelector(".delete");
@@ -85,9 +85,9 @@ textbox.addEventListener("keydown", function(e) {
 
             let entry = listItem.querySelector(".entry");
             edit.value = entry.textContent;
-            
+
             edit.addEventListener('focusout', (event) => {
-                if (edit.value !== "") {
+                if (edit.value !== "" && !(/^\s+$/.test(edit.value))) {
                     edit.style.display = "none";
                     item.style.display = "grid";
                     entry.textContent = edit.value; 
