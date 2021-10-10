@@ -34,7 +34,6 @@ textbox.addEventListener("keydown", function(e) {
                 let index = completedList.indexOf(listItem);
                 completedList.splice(index, 1);
             }
-
             listItem.remove();
 
             if (list.length === 0) {
@@ -74,28 +73,27 @@ textbox.addEventListener("keydown", function(e) {
             count.textContent = (list.length - completedList.length);
         }
 
-        listItem.ondblclick = event => {
-            let item = listItem.querySelector(".list-item");
-            item.style.display = "none";
+        let edit = listItem.querySelector(".edit");
+        let item = listItem.querySelector(".list-item");
+        let entry = listItem.querySelector(".entry");
 
-            let edit = listItem.querySelector(".edit");
+        listItem.ondblclick = event => {
+            item.style.display = "none";
             edit.style.display = "grid";
             edit.focus();
 
-
-            let entry = listItem.querySelector(".entry");
             edit.value = entry.textContent;
+        }
 
-            edit.addEventListener('focusout', (event) => {
-                if (edit.value !== "" && !(/^\s+$/.test(edit.value))) {
+        listItem.addEventListener("keydown", function(ev) {
+            if (item.style.display === "none") {
+                if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
                     edit.style.display = "none";
                     item.style.display = "grid";
                     entry.textContent = edit.value; 
                 }
-
-                // Denna kod göra hella mycket konstigt, watch out!!!!!!!!
-                
-                // else if (edit.value === "") {
+                /// Denna del funkar ej :((((
+                // else if (ev.code === "Enter" && (edit.value === "" || /^\s+$/.test(edit.value))) {
                 //     let index = list.indexOf(listItem);
                 //     list.splice(index, 1);
 
@@ -103,10 +101,9 @@ textbox.addEventListener("keydown", function(e) {
                 //         let index = completedList.indexOf(listItem);
                 //         completedList.splice(index, 1);
                 //     }
-
+                    
                 //     listItem.remove();
                 // }
-
                 count.textContent = (list.length - completedList.length);
 
                 if (list.length === 0) {
@@ -116,16 +113,23 @@ textbox.addEventListener("keydown", function(e) {
                 if (completedList.length === 0) {
                     clearCompleted.style.display = "none";
                 }
-            });
-            
+            }
+        });
 
-            // hanterar ej om man sätter in en tom sträng!!!!!!!!
-            edit.addEventListener("keydown", function(ev) {
-                if (ev.code === "Enter") {
-                    edit.blur();
-                }
-            })
-        }
+        edit.addEventListener("focusout", function(ev) {
+            if (item.style.display === "none") {
+                const keyboardEvent = new KeyboardEvent('keydown', {
+                    code: 'Enter',
+                    key: 'Enter',
+                    charCode: 13,
+                    keyCode: 13,
+                    view: window,
+                    bubbles: true
+                });
+                listItem.dispatchEvent(keyboardEvent);
+            }
+        });
+ 
 
         todolist.append(listItem);
         list.push(listItem);
