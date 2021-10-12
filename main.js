@@ -8,6 +8,7 @@ let toggleAll = document.querySelector("#all-toggle");
 
 let footer = document.querySelector(".footer");
 let count = document.querySelector("strong");
+let itemsLeft = document.querySelector(".count");
 
 let filterAll = document.querySelector("#all");
 let filterActive = document.querySelector("#active");
@@ -61,6 +62,12 @@ function load() {
                     clearCompleted.style.display = "none";
                 }
                 count.textContent = (list.length - completedList.length);
+                if ((list.length - completedList.length) === 1) {
+                    itemsLeft.textContent = "item left";
+                }
+                else {
+                    itemsLeft.textContent = "items left";
+                }
             }
 
             let checkbox = listItem.querySelector(".toggle");
@@ -117,6 +124,12 @@ function load() {
                 }
                 
                 count.textContent = (list.length - completedList.length);
+                if ((list.length - completedList.length) === 1) {
+                    itemsLeft.textContent = "item left";
+                }
+                else {
+                    itemsLeft.textContent = "items left";
+                }
             }
 
             let edit = listItem.querySelector(".edit");
@@ -157,6 +170,12 @@ function load() {
                         }
                     } 
                     count.textContent = (list.length - completedList.length);
+                    if ((list.length - completedList.length) === 1) {
+                        itemsLeft.textContent = "item left";
+                    }
+                    else {
+                        itemsLeft.textContent = "items left";
+                    }
     
                     if (list.length === 0) {
                         footer.style.display = "none";
@@ -197,6 +216,12 @@ function load() {
             clearCompleted.style.display = "none";
         }
         count.textContent = (list.length - completedList.length);
+        if ((list.length - completedList.length) === 1) {
+            itemsLeft.textContent = "item left";
+        }
+        else {
+            itemsLeft.textContent = "items left";
+        }
     }
 }
 
@@ -265,6 +290,12 @@ textbox.addEventListener("keydown", function(e) {
                 clearCompleted.style.display = "none";
             }
             count.textContent = (list.length - completedList.length);
+            if ((list.length - completedList.length) === 1) {
+                itemsLeft.textContent = "item left";
+            }
+            else {
+                itemsLeft.textContent = "items left";
+            }
         }
 
         let checkbox = listItem.querySelector(".toggle");
@@ -315,6 +346,12 @@ textbox.addEventListener("keydown", function(e) {
             }
             
             count.textContent = (list.length - completedList.length);
+            if ((list.length - completedList.length) === 1) {
+                itemsLeft.textContent = "item left";
+            }
+            else {
+                itemsLeft.textContent = "items left";
+            }
         }
 
         let edit = listItem.querySelector(".edit");
@@ -355,6 +392,12 @@ textbox.addEventListener("keydown", function(e) {
                     }
                 } 
                 count.textContent = (list.length - completedList.length);
+                if ((list.length - completedList.length) === 1) {
+                    itemsLeft.textContent = "item left";
+                }
+                else {
+                    itemsLeft.textContent = "items left";
+                }
 
                 if (list.length === 0) {
                     footer.style.display = "none";
@@ -404,6 +447,12 @@ textbox.addEventListener("keydown", function(e) {
             toggleAllArrow.style.display = "block";
         }
         count.textContent = (list.length - completedList.length);
+        if ((list.length - completedList.length) === 1) {
+            itemsLeft.textContent = "item left";
+        }
+        else {
+            itemsLeft.textContent = "items left";
+        }
     }
 });
 
@@ -452,6 +501,12 @@ toggleAll.onchange = event => {
         location.reload();
     }
     count.textContent = (list.length - completedList.length);
+    if ((list.length - completedList.length) === 1) {
+        itemsLeft.textContent = "item left";
+    }
+    else {
+        itemsLeft.textContent = "items left";
+    }
 }
 
 // This event removes all completed todos regardless of the location.hash

@@ -170,7 +170,7 @@ nav {
 .count {
     grid-area: A;
 }
-.count strong {
+strong {
     font-weight: 300;
 }
 .filters {
