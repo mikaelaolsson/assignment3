@@ -95,8 +95,7 @@ nav {
     border-radius: 50%;
     border: solid 0.02rem #e6e6e6;
     margin-left: 0.4rem;
-    align-self: center;
-    
+    align-self: center; 
 }
 .container input:checked ~ .checkmark {
     position: absolute;
@@ -108,7 +107,6 @@ nav {
     margin-left: 0.7rem;
     margin-top: 0.3rem;
 }
-/* i JS: when toggle:checked => add class .completed to li */
 .completed label {
     color: #d9d9d9;
     text-decoration: line-through;
@@ -119,10 +117,8 @@ nav {
     word-break: break-all;
     padding: 0.9rem 0.85rem 0.95rem 1.8rem;
     line-height: 1.2;
-    /* Denna gör ingenting just nu men kan användas när vi byter färg på labeln */
 	transition: color 0.4s;
 }
-/* i JS: kom ihåg att gömma checkbox .toggle när edit syns */
 .edit {
     display: none;
     grid-area: Todo;
