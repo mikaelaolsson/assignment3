@@ -23,12 +23,8 @@ let todos = [];
 
 function load() {
     if (localStorage.length > 0) {
-        
         let todoSerialized = localStorage.getItem("todo");
-        console.log(todoSerialized);
-
         todos = JSON.parse(todoSerialized);
-        console.log(todos);
 
         todos.forEach(todo => {
             let listItem = template.content.firstElementChild.cloneNode(true);
@@ -456,7 +452,7 @@ toggleAll.onchange = event => {
 }
 
 clearCompleted.onclick = event => {
-    // om man står på #/active när man trycker på knappen så funkar det ej!
+    // Den här tar bara varannan av någon anledning :((((((
     completedList.length = 0;
     
     // tar bort från GUI:t obs completed blir tom om den står på #/active pga då visas inga completed tasks
