@@ -1,26 +1,29 @@
+// All HTML-Elements we need to reach in our JavaScript
 let todolist = document.querySelector(".todolist");
 let textbox = document.querySelector(".new-todo");
+let template = document.querySelector("template");
 
 let toggleAllArrow = document.querySelector(".arrow");
 let toggleAll = document.querySelector("#all-toggle");
 
 let footer = document.querySelector(".footer");
-
-let template = document.querySelector("template");
 let count = document.querySelector("strong");
-let clearCompleted = document.querySelector(".clear-completed");
 
 let filterAll = document.querySelector("#all");
 let filterActive = document.querySelector("#active");
 let filterCompleted = document.querySelector("#completed");
 
+let clearCompleted = document.querySelector(".clear-completed");
+
+// Lists for storing the todos; one for the completed todos and one for them all, regardless of status of completion
 let list = [];
 let completedList = [];
+
+// This list relates to localStorage
 let todos = [];
 
-//localStorage.clear();
 
-
+// This function runs when you load the page and if there is data in localStorage, it loads it to the page
 function load() {
     if (localStorage.length > 0) {
         let todoSerialized = localStorage.getItem("todo");
@@ -77,7 +80,7 @@ function load() {
                     let todoSerialized = JSON.stringify(todos);
                     localStorage.setItem("todo", todoSerialized);
     
-                    if (location.hash === "#/active") { // funkar denna för att listItem är ett DOM objekt???
+                    if (location.hash === "#/active") {
                         listItem.remove();
                     }
                 }
@@ -93,7 +96,7 @@ function load() {
                         localStorage.setItem("todo", todoSerialized);
     
     
-                        if (location.hash === "#/completed") { // samma som ovan
+                        if (location.hash === "#/completed") {
                             listItem.remove();
                         }
                     }   
@@ -199,8 +202,8 @@ function load() {
 
 load();
 
+// This event checks the location.hash upon load and if the hash is either #/active or #/completed, rearranges the page accordingly
 window.onload = event => {
-    console.log(location.hash);
     if (location.hash === "#/active") {
         filterActive.classList.add("selected");
         removeAllChildren(todolist);
@@ -227,6 +230,7 @@ window.onload = event => {
     }
 }
 
+// This event lets the user add todos to the page and adds all the eventhandlers. It's essentially the same code as in load() but is accessible to the user through a textbox
 textbox.addEventListener("keydown", function(e) {
     if (e.code === "Enter" && textbox.value !== "" && !(/^\s+$/.test(textbox.value))) {
         let listItem = template.content.firstElementChild.cloneNode(true);
@@ -274,7 +278,7 @@ textbox.addEventListener("keydown", function(e) {
                 let todoSerialized = JSON.stringify(todos);
                 localStorage.setItem("todo", todoSerialized);
 
-                if (location.hash === "#/active") { // funkar denna för att listItem är ett DOM objekt???
+                if (location.hash === "#/active") { 
                     listItem.remove();
                 }
             }
@@ -290,7 +294,7 @@ textbox.addEventListener("keydown", function(e) {
                     localStorage.setItem("todo", todoSerialized);
 
 
-                    if (location.hash === "#/completed") { // samma som ovan
+                    if (location.hash === "#/completed") { 
                         listItem.remove();
                     }
                 }   
@@ -372,7 +376,7 @@ textbox.addEventListener("keydown", function(e) {
         });
  
         if (location.hash !== "#/completed") { 
-            todolist.append(listItem); // funkar pga DOM objekt???
+            todolist.append(listItem);
         }
 
         list.push(listItem);
@@ -382,11 +386,9 @@ textbox.addEventListener("keydown", function(e) {
             completed: checkbox.checked,
         }
         todos.push(todo);
-        console.log(todos);
 
         let todosSerialized = JSON.stringify(todos);
         localStorage.setItem("todo", todosSerialized);
-        console.log(localStorage); //////////////////////////////////////////////////7777 console.log :)
 
         textbox.value = "";
 
@@ -405,6 +407,7 @@ textbox.addEventListener("keydown", function(e) {
     }
 });
 
+// This event let's you toggle all todos regardless of the location.hash
 toggleAll.onchange = event => {
     let checkboxes = document.querySelectorAll(".toggle");
     let listItems = document.querySelectorAll(".task"); 
@@ -451,24 +454,28 @@ toggleAll.onchange = event => {
     count.textContent = (list.length - completedList.length);
 }
 
+// This event removes all completed todos regardless of the location.hash
 clearCompleted.onclick = event => {
-    // Den här tar bara varannan av någon anledning :((((((
-    completedList.length = 0;
-    
-    // tar bort från GUI:t obs completed blir tom om den står på #/active pga då visas inga completed tasks
     let completed = document.querySelectorAll(".completed");
-    completed.forEach(task => {
-        task.remove();
-    });
+    completedList.length = 0;
 
-    // tar bort från the list
-    list.forEach(item => {
-        if (item.classList.contains("completed")) {
-            let index = list.indexOf(item);
-            list.splice(index, 1);
-            todos.splice(index, 1);
-        }
-    });
+    if (location.hash === "#/active") {
+        let newList = list.filter(todo => (!todo.classList.contains("completed")));
+        list = newList;
+
+        let newTodos = todos.filter(function (e) {
+            return e.completed === false;
+        });
+        todos = newTodos;
+    }
+    else { 
+        completed.forEach(task => {
+        task.remove();
+        let index = list.indexOf(task);
+        list.splice(index, 1);
+        todos.splice(index, 1);
+        });
+    }
 
     let todoSerialized = JSON.stringify(todos);
     localStorage.setItem("todo", todoSerialized);
@@ -479,22 +486,11 @@ clearCompleted.onclick = event => {
         footer.style.display = "none";
         toggleAllArrow.style.display = "none";
     }
-
 }
 
-// vet ej om detta är rätt alls????????????
+// This event checks for the location.hash on a change of the hash and rearranges the page accordingly for each hash
 window.onhashchange = event => {
-    if (location.hash === "" || location.hash === "#/") {
-        filterAll.classList.add("selected");
-
-        list.forEach(item => {
-            todolist.append(item);
-        });
-    
-        filterActive.classList.remove("selected");
-        filterCompleted.classList.remove("selected");
-    }
-    else if (location.hash === "#/active") {
+    if (location.hash === "#/active") {
         filterActive.classList.add("selected");
         removeAllChildren(todolist);
         list.forEach(item => {
@@ -518,8 +514,19 @@ window.onhashchange = event => {
         filterAll.classList.remove("selected");
         filterActive.classList.remove("selected");
     }
+    else {
+        filterAll.classList.add("selected");
+
+        list.forEach(item => {
+            todolist.append(item);
+        });
+    
+        filterActive.classList.remove("selected");
+        filterCompleted.classList.remove("selected");
+    }
 }
 
+// This function removes all children from an element
 function removeAllChildren(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
