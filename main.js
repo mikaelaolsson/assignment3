@@ -198,7 +198,12 @@ function load() {
             edit.addEventListener("focusout", function(ev) {
                 if (item.style.display === "none") {
                     const keyboardEvent = new KeyboardEvent('keyup', {
-                        key: 'Enter'
+                        code: 'Enter',
+                        key: 'Enter',
+                        charCode: 13,
+                        keyCode: 13,
+                        view: window,
+                        bubbles: true
                     });
                     listItem.dispatchEvent(keyboardEvent);
                 }
@@ -435,7 +440,12 @@ textbox.addEventListener("keydown", function(e) {
         edit.addEventListener("focusout", function(ev) {
             if (item.style.display === "none") {
                 const keyboardEvent = new KeyboardEvent('keyup', {
-                    key: 'Enter'
+                    code: 'Enter',
+                    key: 'Enter',
+                    charCode: 13,
+                    keyCode: 13,
+                    view: window,
+                    bubbles: true
                 });
                 listItem.dispatchEvent(keyboardEvent);
             }
