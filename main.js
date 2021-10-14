@@ -23,7 +23,7 @@ let completedList = [];
 // This list relates to localStorage
 let todos = [];
 
-
+let butt = 0;
 // This function runs when you load the page and if there is data in localStorage, it loads it to the page
 function load() {
     if (localStorage.length > 0) {
@@ -146,18 +146,27 @@ function load() {
     
             listItem.addEventListener("keyup", function(ev) {
                 if (item.style.display === "none") {
-                    if (ev.key === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
+                    if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
                         edit.style.display = "none";
                         item.style.display = "grid";
-                        entry.textContent = edit.value; 
+                        entry.textContent = edit.value;
+
+                        let index = list.indexOf(listItem);
+
+                        todos[index].title = entry.textContent;
+                        let todoSerialized = JSON.stringify(todos);
+                        localStorage.setItem("todo", todoSerialized);
                     }
                                  
-                    else if (ev.key === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
+                    else if (ev.code === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
                         ev.preventDefault();
     
                         if (list.includes(listItem)) {
                             let index = list.indexOf(listItem);
                             list.splice(index, 1);
+                            todos.splice(index, 1);
+                            let todoSerialized = JSON.stringify(todos);
+                            localStorage.setItem("todo", todoSerialized);
                         }
     
                         if (listItem.classList.contains("completed")) {
@@ -167,6 +176,8 @@ function load() {
     
                         if (todolist.contains(listItem)) {
                             listItem.remove();
+                            butt++;
+                            console.log(butt);
                         }
                     } 
                     count.textContent = (list.length - completedList.length);
@@ -368,18 +379,27 @@ textbox.addEventListener("keydown", function(e) {
 
         listItem.addEventListener("keyup", function(ev) {
             if (item.style.display === "none") {
-                if (ev.key === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
+                if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
                     edit.style.display = "none";
                     item.style.display = "grid";
                     entry.textContent = edit.value; 
+
+                    let index = list.indexOf(listItem);
+                    todos[index].title = entry.textContent;
+                    let todoSerialized = JSON.stringify(todos);
+                    localStorage.setItem("todo", todoSerialized);
                 }
                              
-                else if (ev.key === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
+                else if (ev.code === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
                     ev.preventDefault();
 
                     if (list.includes(listItem)) {
                         let index = list.indexOf(listItem);
                         list.splice(index, 1);
+                        
+                        todos.splice(index, 1);
+                        let todoSerialized = JSON.stringify(todos);
+                        localStorage.setItem("todo", todoSerialized);
                     }
 
                     if (listItem.classList.contains("completed")) {
@@ -388,6 +408,9 @@ textbox.addEventListener("keydown", function(e) {
                     }
 
                     if (todolist.contains(listItem)) {
+                        
+                        butt++;
+                        console.log(butt);
                         listItem.remove();
                     }
                 } 
