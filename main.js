@@ -143,13 +143,7 @@ function load() {
     
                 edit.value = entry.textContent;
             }
-
-            // This event triggers an error when you try to submit your edit through pressing Enter and your edit is either empty or only contains whitespace
-            // This error does not occur when you enter this event through the focusout-event located below
-            // Using breakpoints have unfortunately been futile, as the error is not visible when you're stepping through the code and the process is slowed down
-            // With the use of a simple counter inside the if-statment (todolist.contains(listItem)) we could detect that the event seems to fire twice
-            // Although we thought that the use of .contains should be enough, as the listItem should not exist on the second run of the event, unfortunately it was not
-
+            
             listItem.addEventListener("keyup", function(ev) {
                 if (item.style.display === "none") {
                     if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
@@ -166,22 +160,20 @@ function load() {
                                  
                     else if (ev.code === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
                         ev.preventDefault();
-    
+
+                        // This event used to trigger an error.. but we found a workaround :)
                         if (list.includes(listItem)) {
                             let index = list.indexOf(listItem);
                             list.splice(index, 1);
                             todos.splice(index, 1);
                             let todoSerialized = JSON.stringify(todos);
                             localStorage.setItem("todo", todoSerialized);
+                            listItem.remove();
                         }
     
                         if (listItem.classList.contains("completed")) {
                             let index = completedList.indexOf(listItem);
                             completedList.splice(index, 1);
-                        }
-    
-                        if (todolist.contains(listItem)) {
-                            listItem.remove();
                         }
                     } 
                     count.textContent = (list.length - completedList.length);
@@ -386,12 +378,6 @@ textbox.addEventListener("keydown", function(e) {
             edit.value = entry.textContent;
         }
 
-        // This event triggers an error when you try to submit your edit through pressing Enter and your edit is either empty or only contains whitespace
-        // This error does not occur when you enter this event through the focusout-event located below
-        // Using breakpoints have unfortunately been futile, as the error is not visible when you're stepping through the code and the process is slowed down
-        // With the use of a simple counter inside the if-statment (todolist.contains(listItem)) we could detect that the event seems to fire twice
-        // Although we thought that the use of .contains should be enough, as the listItem should not exist on the second run of the event, unfortunately it was not
-
         listItem.addEventListener("keyup", function(ev) {
             if (item.style.display === "none") {
                 if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
@@ -407,7 +393,7 @@ textbox.addEventListener("keydown", function(e) {
                              
                 else if (ev.code === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
                     ev.preventDefault();
-
+                    // This event used to trigger an error.. but we found a workaround :)
                     if (list.includes(listItem)) {
                         let index = list.indexOf(listItem);
                         list.splice(index, 1);
@@ -415,15 +401,12 @@ textbox.addEventListener("keydown", function(e) {
                         todos.splice(index, 1);
                         let todoSerialized = JSON.stringify(todos);
                         localStorage.setItem("todo", todoSerialized);
+                        listItem.remove();
                     }
 
                     if (listItem.classList.contains("completed")) {
                         let index = completedList.indexOf(listItem);
                         completedList.splice(index, 1);
-                    }
-
-                    if (todolist.contains(listItem)) {
-                        listItem.remove();
                     }
                 } 
                 count.textContent = (list.length - completedList.length);
