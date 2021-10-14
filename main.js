@@ -23,7 +23,7 @@ let completedList = [];
 // This list relates to localStorage
 let todos = [];
 
-let butt = 0;
+
 // This function runs when you load the page and if there is data in localStorage, it loads it to the page
 function load() {
     if (localStorage.length > 0) {
@@ -143,7 +143,13 @@ function load() {
     
                 edit.value = entry.textContent;
             }
-    
+
+            // This event triggers an error when you try to submit your edit through pressing Enter
+            // This error does not occur when you enter this event through the focusout-event located below
+            // Using breakpoints have unfortunately been futile, as the error is not visible when you're stepping through the code and the process is slowed down
+            // With the use of a simple counter inside the if-statment (todolist.contains(listItem)) we could detect that the event seems to fire twice
+            // Although we thought that the use of .contains should be enough, as the listItem should not exist on the second run of the event, unfortunately it was not
+
             listItem.addEventListener("keyup", function(ev) {
                 if (item.style.display === "none") {
                     if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
@@ -176,8 +182,6 @@ function load() {
     
                         if (todolist.contains(listItem)) {
                             listItem.remove();
-                            butt++;
-                            console.log(butt);
                         }
                     } 
                     count.textContent = (list.length - completedList.length);
@@ -382,6 +386,12 @@ textbox.addEventListener("keydown", function(e) {
             edit.value = entry.textContent;
         }
 
+        // This event triggers an error when you try to submit your edit through pressing Enter
+        // This error does not occur when you enter this event through the focusout-event located below
+        // Using breakpoints have unfortunately been futile, as the error is not visible when you're stepping through the code and the process is slowed down
+        // With the use of a simple counter inside the if-statment (todolist.contains(listItem)) we could detect that the event seems to fire twice
+        // Although we thought that the use of .contains should be enough, as the listItem should not exist on the second run of the event, unfortunately it was not
+
         listItem.addEventListener("keyup", function(ev) {
             if (item.style.display === "none") {
                 if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
@@ -413,9 +423,6 @@ textbox.addEventListener("keydown", function(e) {
                     }
 
                     if (todolist.contains(listItem)) {
-                        
-                        butt++;
-                        console.log(butt);
                         listItem.remove();
                     }
                 } 
