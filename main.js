@@ -23,217 +23,16 @@ let completedList = [];
 // This list relates to localStorage
 let todos = [];
 
-
-// This function runs when you load the page and if there is data in localStorage, it loads it to the page
+//This function runs when you load the page and if there is data in localStorage, it loads it to the page through the addTodo-function
 function load() {
     if (localStorage.length > 0) {
-        let todoSerialized = localStorage.getItem("todo");
-        todos = JSON.parse(todoSerialized);
+        getLocalStorage();
 
         todos.forEach(todo => {
-            let listItem = template.content.firstElementChild.cloneNode(true);
-            let text = todo.title;
-            listItem.querySelector(".entry").textContent = text;
-            
-            let deleteButton = listItem.querySelector(".delete");
-            deleteButton.onclick = event => {
-    
-                let index = list.indexOf(listItem);
-                list.splice(index, 1);
-    
-                todos.splice(index, 1);
-                let todoSerialized = JSON.stringify(todos);
-                localStorage.setItem("todo", todoSerialized);
-    
-                if (listItem.classList.contains("completed")) {
-                    let index = completedList.indexOf(listItem);
-                    completedList.splice(index, 1);
-                }
-                listItem.remove();
-    
-                if (list.length === 0) {
-                    footer.style.display = "none";
-                    toggleAllArrow.style.display = "none";  
-                }
-                if (completedList.length > 0) {
-                    clearCompleted.style.display = "grid";
-                }
-                else {
-                    clearCompleted.style.display = "none";
-                }
-                count.textContent = (list.length - completedList.length);
-                if ((list.length - completedList.length) === 1) {
-                    itemsLeft.textContent = "item left";
-                }
-                else {
-                    itemsLeft.textContent = "items left";
-                }
-            }
-
-            let checkbox = listItem.querySelector(".toggle");
-            if (todo.completed === true) {
-                checkbox.checked = true;
-                listItem.classList.add("completed");
-                completedList.push(listItem);
-            }
-            
-            checkbox.onchange = event => {
-                if (checkbox.checked) {
-                    listItem.classList.add("completed");
-                    completedList.push(listItem);
-    
-                    let index = list.indexOf(listItem);
-                    todos[index].completed = true;
-                    let todoSerialized = JSON.stringify(todos);
-                    localStorage.setItem("todo", todoSerialized);
-    
-                    if (location.hash === "#/active") {
-                        listItem.remove();
-                    }
-                }
-                else {
-                    if (listItem.classList.contains("completed")) {
-                        listItem.classList.remove("completed");
-                        let index = completedList.indexOf(listItem);
-                        completedList.splice(index, 1);
-    
-                        let i = list.indexOf(listItem);
-                        todos[i].completed = false;
-                        let todoSerialized = JSON.stringify(todos);
-                        localStorage.setItem("todo", todoSerialized);
-    
-    
-                        if (location.hash === "#/completed") {
-                            listItem.remove();
-                        }
-                    }   
-                }
-    
-                if (completedList.length > 0) {
-                    clearCompleted.style.display = "grid";
-                }
-                else {
-                    clearCompleted.style.display = "none";
-                }
-    
-                if (list.length === completedList.length) {
-                    toggleAll.checked = true;
-                }
-                else {
-                    toggleAll.checked = false;
-                }
-                
-                count.textContent = (list.length - completedList.length);
-                if ((list.length - completedList.length) === 1) {
-                    itemsLeft.textContent = "item left";
-                }
-                else {
-                    itemsLeft.textContent = "items left";
-                }
-            }
-
-            let edit = listItem.querySelector(".edit");
-            let item = listItem.querySelector(".list-item");
-            let entry = listItem.querySelector(".entry");
-    
-            listItem.ondblclick = event => {
-                item.style.display = "none";
-                edit.style.display = "grid";
-                edit.focus();
-    
-                edit.value = entry.textContent;
-            }
-            
-            listItem.addEventListener("keyup", function(ev) {
-                if (item.style.display === "none") {
-                    if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
-                        edit.style.display = "none";
-                        item.style.display = "grid";
-                        entry.textContent = edit.value;
-
-                        let index = list.indexOf(listItem);
-
-                        todos[index].title = entry.textContent;
-                        let todoSerialized = JSON.stringify(todos);
-                        localStorage.setItem("todo", todoSerialized);
-                    }
-                                 
-                    else if (ev.code === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
-                        ev.preventDefault();
-
-                        // This event used to trigger an error.. but we found a workaround :)
-                        if (list.includes(listItem)) {
-                            let index = list.indexOf(listItem);
-                            list.splice(index, 1);
-                            todos.splice(index, 1);
-                            let todoSerialized = JSON.stringify(todos);
-                            localStorage.setItem("todo", todoSerialized);
-                            listItem.remove();
-                        }
-    
-                        if (listItem.classList.contains("completed")) {
-                            let index = completedList.indexOf(listItem);
-                            completedList.splice(index, 1);
-                        }
-                    } 
-                    count.textContent = (list.length - completedList.length);
-                    if ((list.length - completedList.length) === 1) {
-                        itemsLeft.textContent = "item left";
-                    }
-                    else {
-                        itemsLeft.textContent = "items left";
-                    }
-    
-                    if (list.length === 0) {
-                        footer.style.display = "none";
-                        toggleAllArrow.style.display = "none";
-                    }
-                }
-            });
-    
-            edit.addEventListener("focusout", function(ev) {
-                if (item.style.display === "none") {
-                    const keyboardEvent = new KeyboardEvent('keyup', {
-                        code: 'Enter',
-                        key: 'Enter',
-                        charCode: 13,
-                        keyCode: 13,
-                        view: window,
-                        bubbles: true
-                    });
-                    listItem.dispatchEvent(keyboardEvent);
-                }
-            });
-
-            list.push(listItem);
-            todolist.append(listItem);
+            let saved = true;
+            addTodo(todo.title, todo.completed, saved);
         });
-        
-        if (list.length === completedList.length) {
-            toggleAll.checked = true;
-        }
-        else {
-            toggleAll.checked = false;
-        }
-
-        if (list.length !== 0) {
-            footer.style.display = "grid";
-            toggleAllArrow.style.display = "block";
-        }
-
-        if (completedList.length > 0) {
-            clearCompleted.style.display = "grid";
-        }
-        else {
-            clearCompleted.style.display = "none";
-        }
-        count.textContent = (list.length - completedList.length);
-        if ((list.length - completedList.length) === 1) {
-            itemsLeft.textContent = "item left";
-        }
-        else {
-            itemsLeft.textContent = "items left";
-        }
+        updateGUI();
     }
 }
 
@@ -267,215 +66,15 @@ window.onload = event => {
     }
 }
 
-// This event lets the user add todos to the page and adds all the eventhandlers. It's essentially the same code as in load() but is accessible to the user through a textbox
+// Lets the user add a todo through the use of the addTodo-function
 textbox.addEventListener("keydown", function(e) {
     if (e.code === "Enter" && textbox.value !== "" && !(/^\s+$/.test(textbox.value))) {
-        let listItem = template.content.firstElementChild.cloneNode(true);
-
+        let saved = false;
         let text = (textbox.value).trim();
-        listItem.querySelector(".entry").textContent = text;
-
-        let deleteButton = listItem.querySelector(".delete");
-        deleteButton.onclick = event => {
-
-            let index = list.indexOf(listItem);
-            list.splice(index, 1);
-
-            todos.splice(index, 1);
-            let todoSerialized = JSON.stringify(todos);
-            localStorage.setItem("todo", todoSerialized);
-
-            if (listItem.classList.contains("completed")) {
-                let index = completedList.indexOf(listItem);
-                completedList.splice(index, 1);
-            }
-            listItem.remove();
-
-            if (list.length === 0) {
-                footer.style.display = "none";
-                toggleAllArrow.style.display = "none";  
-            }
-            if (completedList.length > 0) {
-                clearCompleted.style.display = "grid";
-            }
-            else {
-                clearCompleted.style.display = "none";
-            }
-            count.textContent = (list.length - completedList.length);
-            if ((list.length - completedList.length) === 1) {
-                itemsLeft.textContent = "item left";
-            }
-            else {
-                itemsLeft.textContent = "items left";
-            }
-        }
-
-        let checkbox = listItem.querySelector(".toggle");
-        checkbox.onchange = event => {
-            if (checkbox.checked) {
-                listItem.classList.add("completed");
-                completedList.push(listItem);
-
-                let index = list.indexOf(listItem);
-                todos[index].completed = true;
-                let todoSerialized = JSON.stringify(todos);
-                localStorage.setItem("todo", todoSerialized);
-
-                if (location.hash === "#/active") { 
-                    listItem.remove();
-                }
-            }
-            else {
-                if (listItem.classList.contains("completed")) {
-                    listItem.classList.remove("completed");
-                    let index = completedList.indexOf(listItem);
-                    completedList.splice(index, 1);
-
-                    let i = list.indexOf(listItem);
-                    todos[i].completed = false;
-                    let todoSerialized = JSON.stringify(todos);
-                    localStorage.setItem("todo", todoSerialized);
-
-
-                    if (location.hash === "#/completed") { 
-                        listItem.remove();
-                    }
-                }   
-            }
-
-            if (completedList.length > 0) {
-                clearCompleted.style.display = "grid";
-            }
-            else {
-                clearCompleted.style.display = "none";
-            }
-
-            if (list.length === completedList.length) {
-                toggleAll.checked = true;
-            }
-            else {
-                toggleAll.checked = false;
-            }
-            
-            count.textContent = (list.length - completedList.length);
-            if ((list.length - completedList.length) === 1) {
-                itemsLeft.textContent = "item left";
-            }
-            else {
-                itemsLeft.textContent = "items left";
-            }
-        }
-
-        let edit = listItem.querySelector(".edit");
-        let item = listItem.querySelector(".list-item");
-        let entry = listItem.querySelector(".entry");
-
-        listItem.ondblclick = event => {
-            item.style.display = "none";
-            edit.style.display = "grid";
-            edit.focus();
-
-            edit.value = entry.textContent;
-        }
-
-        listItem.addEventListener("keyup", function(ev) {
-            if (item.style.display === "none") {
-                if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
-                    edit.style.display = "none";
-                    item.style.display = "grid";
-                    entry.textContent = edit.value; 
-
-                    let index = list.indexOf(listItem);
-                    todos[index].title = entry.textContent;
-                    let todoSerialized = JSON.stringify(todos);
-                    localStorage.setItem("todo", todoSerialized);
-                }
-                             
-                else if (ev.code === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
-                    ev.preventDefault();
-                    // This event used to trigger an error.. but we found a workaround :)
-                    if (list.includes(listItem)) {
-                        let index = list.indexOf(listItem);
-                        list.splice(index, 1);
-                        
-                        todos.splice(index, 1);
-                        let todoSerialized = JSON.stringify(todos);
-                        localStorage.setItem("todo", todoSerialized);
-                        listItem.remove();
-                    }
-
-                    if (listItem.classList.contains("completed")) {
-                        let index = completedList.indexOf(listItem);
-                        completedList.splice(index, 1);
-                    }
-                } 
-                count.textContent = (list.length - completedList.length);
-                if ((list.length - completedList.length) === 1) {
-                    itemsLeft.textContent = "item left";
-                }
-                else {
-                    itemsLeft.textContent = "items left";
-                }
-
-                if (list.length === 0) {
-                    footer.style.display = "none";
-                    toggleAllArrow.style.display = "none";
-                }
-                if (completedList.length === 0) {
-                    clearCompleted.style.display = "none";
-                }
-            }
-        });
-
-        edit.addEventListener("focusout", function(ev) {
-            if (item.style.display === "none") {
-                const keyboardEvent = new KeyboardEvent('keyup', {
-                    code: 'Enter',
-                    key: 'Enter',
-                    charCode: 13,
-                    keyCode: 13,
-                    view: window,
-                    bubbles: true
-                });
-                listItem.dispatchEvent(keyboardEvent);
-            }
-        });
- 
-        if (location.hash !== "#/completed") { 
-            todolist.append(listItem);
-        }
-
-        list.push(listItem);
-
-        let todo = {
-            title: entry.textContent,
-            completed: checkbox.checked,
-        }
-        todos.push(todo);
-
-        let todosSerialized = JSON.stringify(todos);
-        localStorage.setItem("todo", todosSerialized);
+        addTodo(text, false, saved);
 
         textbox.value = "";
-
-        if (list.length === completedList.length) {
-            toggleAll.checked = true;
-        }
-        else {
-            toggleAll.checked = false;
-        }
-
-        if (list.length !== 0) {
-            footer.style.display = "grid";
-            toggleAllArrow.style.display = "block";
-        }
-        count.textContent = (list.length - completedList.length);
-        if ((list.length - completedList.length) === 1) {
-            itemsLeft.textContent = "item left";
-        }
-        else {
-            itemsLeft.textContent = "items left";
-        }
+        updateGUI();
     }
 });
 
@@ -497,15 +96,12 @@ toggleAll.onchange = event => {
         for (let i = 0; i < todos.length; i ++) {
             todos[i].completed = true;
         }
-        let todoSerialized = JSON.stringify(todos);
-        localStorage.setItem("todo", todoSerialized);
-
-        clearCompleted.style.display ="grid";
+        setLocalStorage(todos);
     }
     else {
         checkboxes.forEach(box => {
             box.checked = false;
-        })
+        });
         listItems.forEach(item => {
             if (item.parentNode.classList.contains("completed")) {
                 item.parentNode.classList.remove("completed");
@@ -516,20 +112,13 @@ toggleAll.onchange = event => {
         for (let i = 0; i < todos.length; i ++) {
             todos[i].completed = false;
         }
-        let todoSerialized = JSON.stringify(todos);
-        localStorage.setItem("todo", todoSerialized);
-        clearCompleted.style.display ="none";
+        setLocalStorage(todos);
     }
     if (location.hash === "#/active" || location.hash === "#/completed") {
         location.reload();
     }
-    count.textContent = (list.length - completedList.length);
-    if ((list.length - completedList.length) === 1) {
-        itemsLeft.textContent = "item left";
-    }
-    else {
-        itemsLeft.textContent = "items left";
-    }
+    updateGUI();
+
 }
 
 // This event removes all completed todos regardless of the location.hash
@@ -555,15 +144,8 @@ clearCompleted.onclick = event => {
         });
     }
 
-    let todoSerialized = JSON.stringify(todos);
-    localStorage.setItem("todo", todoSerialized);
-
-    clearCompleted.style.display = "none";
-
-    if (list.length === 0) {
-        footer.style.display = "none";
-        toggleAllArrow.style.display = "none";
-    }
+    setLocalStorage(todos);
+    updateGUI();
 }
 
 // This event checks for the location.hash on a change of the hash and rearranges the page accordingly for each hash
@@ -604,6 +186,185 @@ window.onhashchange = event => {
     }
 }
 
+// Adds a new todo to the page
+function addTodo(newTodo, completed, saved) {
+    let listItem = template.content.firstElementChild.cloneNode(true);
+    listItem.querySelector(".entry").textContent = newTodo;
+
+    let deleteButton = listItem.querySelector(".delete");
+    deleteButton.onclick = event => {
+
+        let index = list.indexOf(listItem);
+        list.splice(index, 1);
+
+        todos.splice(index, 1);
+        setLocalStorage(todos);
+
+        if (listItem.classList.contains("completed")) {
+            let index = completedList.indexOf(listItem);
+            completedList.splice(index, 1);
+        }
+        listItem.remove();
+
+        updateGUI();
+    }
+
+    let checkbox = listItem.querySelector(".toggle");
+    if (completed === true) {
+        checkbox.checked = true;
+        listItem.classList.add("completed");
+        completedList.push(listItem);
+    }
+
+    checkbox.onchange = event => {
+        if (checkbox.checked) {
+            listItem.classList.add("completed");
+            completedList.push(listItem);
+
+            let index = list.indexOf(listItem);
+            todos[index].completed = true;
+            setLocalStorage(todos);
+
+            if (location.hash === "#/active") { 
+                listItem.remove();
+            }
+        }
+        else {
+            if (listItem.classList.contains("completed")) {
+                listItem.classList.remove("completed");
+                let index = completedList.indexOf(listItem);
+                completedList.splice(index, 1);
+
+                let i = list.indexOf(listItem);
+                todos[i].completed = false;
+                setLocalStorage(todos);
+
+                if (location.hash === "#/completed") { 
+                    listItem.remove();
+                }
+            }   
+        }
+        updateGUI();
+    }
+
+    let edit = listItem.querySelector(".edit");
+    let item = listItem.querySelector(".list-item");
+    let entry = listItem.querySelector(".entry");
+
+    listItem.ondblclick = event => {
+        item.style.display = "none";
+        edit.style.display = "grid";
+        edit.focus();
+
+        edit.value = entry.textContent;
+    }
+
+    listItem.addEventListener("keyup", function(ev) {
+        if (item.style.display === "none") {
+            if (ev.code === "Enter" && edit.value !== "" && !(/^\s+$/.test(edit.value))) {
+                edit.style.display = "none";
+                item.style.display = "grid";
+                entry.textContent = edit.value; 
+
+                let index = list.indexOf(listItem);
+                todos[index].title = entry.textContent;
+                setLocalStorage(todos);
+            }
+                            
+            else if (ev.code === "Enter" && (edit.value === "" || (/^\s+$/.test(edit.value)))) {
+                ev.preventDefault();
+                // This event used to trigger an error.. but we found a workaround :)
+                if (list.includes(listItem)) {
+                    let index = list.indexOf(listItem);
+                    list.splice(index, 1);
+                    
+                    todos.splice(index, 1);
+                    setLocalStorage(todos);
+                    listItem.remove();
+                }
+
+                if (listItem.classList.contains("completed")) {
+                    let index = completedList.indexOf(listItem);
+                    completedList.splice(index, 1);
+                }
+            } 
+            updateGUI();
+        }
+    });
+
+    edit.addEventListener("focusout", function(ev) {
+        if (item.style.display === "none") {
+            const keyboardEvent = new KeyboardEvent('keyup', {
+                code: 'Enter',
+                key: 'Enter',
+                charCode: 13,
+                keyCode: 13,
+                view: window,
+                bubbles: true
+            });
+            listItem.dispatchEvent(keyboardEvent);
+        }
+    });
+
+    if (location.hash !== "#/completed") { 
+        todolist.append(listItem);
+    }
+
+    list.push(listItem);
+
+    if (!saved) {
+        let todo = {
+            title: entry.textContent,
+            completed: checkbox.checked,
+        }
+        todos.push(todo);
+
+        setLocalStorage(todos);
+    }
+}
+
+// Updates various small parts of the GUI
+function updateGUI() {
+    if (list.length === 0) {
+        footer.style.display = "none";
+        toggleAllArrow.style.display = "none";  
+    }
+    else {
+        footer.style.display = "grid";
+        toggleAllArrow.style.display = "block";
+    }
+    if (completedList.length > 0) {
+        clearCompleted.style.display = "grid";
+    }
+    else {
+        clearCompleted.style.display = "none";
+    }
+
+    count.textContent = (list.length - completedList.length);
+    if ((list.length - completedList.length) === 1) {
+        itemsLeft.textContent = "item left";
+    }
+    else {
+        itemsLeft.textContent = "items left";
+    }
+
+    if (list.length === completedList.length) {
+        toggleAll.checked = true;
+    }
+    else {
+        toggleAll.checked = false;
+    }
+}
+// Retrieves the data from localStorage 
+function getLocalStorage() {
+    let todoSerialized = localStorage.getItem("todo");
+    todos = JSON.parse(todoSerialized);
+}
+// Saves the data to localStorage
+function setLocalStorage(todos) {
+    let todoSerialized = JSON.stringify(todos);
+    localStorage.setItem("todo", todoSerialized);
+}
 // This function removes all children from an element
 function removeAllChildren(parent) {
     while (parent.firstChild) {
