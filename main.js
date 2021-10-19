@@ -28,11 +28,14 @@ function load() {
     if (localStorage.length > 0) {
         getLocalStorage();
 
-        todos.forEach(todo => {
+        if (todos.length > 0) {
+            todos.forEach(todo => {
             let saved = true;
             addTodo(todo.title, todo.completed, saved);
         });
-        updateGUI();
+        
+        updateGUI();  
+        }
     }
 }
 
